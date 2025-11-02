@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Prompt Optimizer</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            background: 'var(--color-background)',
+            card: 'var(--color-card)',
+            border: 'var(--color-border)',
+            primary: '#3b82f6',
+            'primary-hover': '#2563eb',
+            muted: 'var(--color-muted)',
+            success: '#22c55e',
+            'success-hover': '#16a34a',
+            danger: '#ef4444',
+            'danger-hover': '#dc2626',
+            neutral: '#525252',
+            'neutral-hover': '#3f3f46',
+          },
+          fontFamily: {
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* Custom CSS Variables for Theme */
+    html.dark {
+        --color-background: #0a0a0a;
+        --color-card: #111111;
+        --color-border: #262626;
+        --color-text: #ffffff;
+        --color-muted: #737373;
+    }
+    html.light {
+        --color-background: #ffffff;
+        --color-card: #f3f4f6;
+        --color-border: #d1d5db;
+        --color-text: #1f2937;
+        --color-muted: #6b7280;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--color-text);
+      background-color: var(--color-background);
+    }
+    
+    textarea {
+        color: var(--color-text) !important;
+        background-color: var(--color-background) !important;
+        border-color: var(--color-border) !important;
+    }
+
+    textarea::placeholder {
+        color: var(--color-muted) !important;
+    }
+
+    .copy-button, .feedback-button {
+      transition: all 0.2s ease;
+    }
+    .copy-button:hover {
+      transform: scale(1.05);
+    }
+    
+    .copy-button svg {
+        margin: auto;
+    }
+  </style>
+</head>
+<body class="bg-background min-h-screen antialiased">
+  
+  <div class="container mx-auto px-4 py-8 max-w-7xl">
+    
+    <div class="flex justify-between items-start mb-8">
+      <div class="text-left">
+        <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+          AI Prompt Optimizer
+        </h1>
+        <p class="text-muted text-sm">Transform vague prompts into optimized AI instructions</p>
+      </div>
+      <button id="theme-toggle" class="text-2xl hover:text-primary transition-colors focus:outline-none">
+        ☀️
+      </button>
+    </div>
+
+    <div class="bg-card border border-border rounded-lg shadow-2xl p-6 md:p-8">
+      
+      <div class="mb-8">
+        <label for="vague-prompt" class="block text-sm font-medium mb-2 text-muted">
+          1. Your Vague Question/Input
+        </label>
+        <textarea
+          id="vague-prompt"
+          rows="6"
+          placeholder="Enter your vague or incomplete prompt here..."
+          class="w-full border rounded-lg px-4 py-3 placeholder-muted resize-none focus:ring-2 focus:ring-primary transition-all"
+        ></textarea>
+        
+        <button
+          id="optimize-button"
+          class="mt-4 w-full md:w-auto bg-primary hover:bg-primary-hover text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-primary/50"
+        >
+          Optimize & Generate 🚀
+        </button>
+      </div>
+
+      <div id="output-section" class="hidden mb-8">
+        <h2 class="text-xl font-semibold mb-4 text-muted">2. Optimization Results</h2>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          
+          <div class="bg-background border border-border rounded-lg p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-medium text-muted">Optimized Prompt (The Instruction)</h3>
+              <button
+                id="copy-optimized"
+                class="copy-button text-xs bg-border hover:bg-primary p-2 rounded transition-all"
+                title="Copy Optimized Prompt"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876V5.625a1.125 1.125 0 00-1.125-1.125h-6c-1.125 0-2.25 1.125-2.25 1.125v3.75c0 .621.504 1.125 1.125 1.125h9.75z" />
+                </svg>
+              </button>
+            </div>
+            <textarea
+              id="optimized-prompt"
+              rows="12"
+              readonly
+              class="w-full bg-transparent border-0 text-sm font-mono resize-none focus:outline-none leading-relaxed"
+            ></textarea>
+          </div>
+
+          <div class="bg-background border border-border rounded-lg p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-medium text-muted">3. Final AI Response (The Content)</h3>
+              <button
+                id="copy-response"
+                class="copy-button text-xs bg-border hover:bg-primary p-2 rounded transition-all"
+                title="Copy Final Response"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876V5.625a1.125 1.125 0 00-1.125-1.125h-6c-1.125 0-2.25 1.125-2.25 1.125v3.75c0 .621.504 1.125 1.125 1.125h9.75z" />
+                </svg>
+              </button>
+            </div>
+            <textarea
+              id="ai-response"
+              rows="12"
+              readonly
+              class="w-full bg-transparent border-0 text-sm resize-none focus:outline-none leading-relaxed"
+            ></textarea>
+          </div>
+          
+        </div>
+      </div>
+
+      <div id="feedback-section" class="hidden border-t border-border pt-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          
+          <div class="flex items-center gap-4">
+            <span class="text-sm font-medium text-muted">4. Continuous Improvement Feedback:</span>
+            <button
+              id="thumbs-up"
+              class="feedback-button bg-neutral hover:bg-neutral-hover text-white px-6 py-2 rounded-lg font-medium transition-all"
+            >
+              👍 Excellent
+            </button>
+            <button
+              id="thumbs-down"
+              class="feedback-button bg-neutral hover:bg-neutral-hover text-white px-6 py-2 rounded-lg font-medium transition-all"
+            >
+              👎 Needs Work
+            </button>
+          </div>
+
+          <div class="text-sm text-muted">
+            <span id="status-text">Status: Ready</span>
+            <span class="mx-2">|</span>
+            <span class="status-pulse">V1.1.0 (MLOps Version)</span>
+          </div>
+          
+        </div>
+
+        <div id="feedback-message" class="hidden mt-4 text-center text-sm text-success">
+          </div>
+      </div>
+
+    </div>
+
+    <div class="text-center mt-8 text-xs text-muted">
+      <p>Powered by Flask, Gradio API, and GitHub Actions MLOps Pipeline.</p>
+    </div>
+
+  </div>
+
+  <script>
+    // --- JAVASCRIPT LOGIC ---
+    
+    // Function to handle Dark/Light mode toggle
+    function toggleTheme() {
+        const html = document.documentElement;
+        const toggleButton = document.getElementById('theme-toggle');
+        
+        if (html.classList.contains('dark')) {
+            html.classList.remove('dark');
+            html.classList.add('light');
+            toggleButton.innerHTML = '☀️'; // Sun icon for light mode
+        } else {
+            html.classList.remove('light');
+            html.classList.add('dark');
+            toggleButton.innerHTML = '🌙'; // Moon icon for dark mode
+        }
+    }
+
+    // --- UPDATED: Icon Definitions ---
+    const copyIconHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876V5.625a1.125 1.125 0 00-1.125-1.125h-6c-1.125 0-2.25 1.125-2.25 1.125v3.75c0 .621.504 1.125 1.125 1.125h9.75z" />
+        </svg>
+    `;
+    const checkIconHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+        </svg>
+    `;
+    
+    // --- UPDATED: Copy function to handle icons ---
+    async function copyToClipboard(text, button) {
+        try {
+            await navigator.clipboard.writeText(text);
+            
+            const originalBg = button.classList.contains('bg-border') ? 'bg-border' : '';
+            const originalHover = button.classList.contains('hover:bg-primary') ? 'hover:bg-primary' : '';
+
+            button.innerHTML = checkIconHTML; // Set checkmark icon
+            
+            button.classList.remove('bg-border', 'hover:bg-primary');
+            button.classList.add('bg-success', 'hover:bg-success-hover');
+            
+            setTimeout(() => {
+                button.innerHTML = copyIconHTML; // Revert to copy icon
+                button.classList.remove('bg-success', 'hover:bg-success-hover');
+                if (originalBg) button.classList.add(originalBg);
+                if (originalHover) button.classList.add(originalHover);
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy:', err);
+            alert('Failed to copy to clipboard');
+        }
+    }
+
+
+    // --- WRAPPER FIX: Wait for all HTML elements to load before running JavaScript ---
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // DOM Elements
+        const vaguePromptInput = document.getElementById('vague-prompt');
+        const optimizeButton = document.getElementById('optimize-button');
+        const outputSection = document.getElementById('output-section');
+        const feedbackSection = document.getElementById('feedback-section');
+        const optimizedPromptOutput = document.getElementById('optimized-prompt');
+        const aiResponseOutput = document.getElementById('ai-response');
+        const statusText = document.getElementById('status-text');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const thumbsUpBtn = document.getElementById('thumbs-up');
+        const thumbsDownBtn = document.getElementById('thumbs-down');
+        const themeToggleButton = document.getElementById('theme-toggle'); 
+        const copyOptimizedBtn = document.getElementById('copy-optimized'); 
+        const copyResponseBtn = document.getElementById('copy-response'); 
+
+        // --- Configuration ---
+        const API_BASE_URL = 'http://127.0.0.1:5000';
+        let currentOptimization = null;
+        
+        // --- Initial Theme Check (Ensure icon matches the initial 'light' class) ---
+        if (document.documentElement.classList.contains('light')) {
+            themeToggleButton.innerHTML = '☀️';
+        } else {
+            themeToggleButton.innerHTML = '🌙';
+        }
+
+
+        // --- Core API Call to Flask Backend (/generate) ---
+        optimizeButton.addEventListener('click', async () => {
+            const vaguePrompt = vaguePromptInput.value.trim();
+            if (!vaguePrompt) {
+                alert('Please enter a prompt to optimize');
+                return;
+            }
+
+            // A. Start Loading State
+            optimizeButton.disabled = true;
+            optimizeButton.textContent = 'Optimizing...';
+            statusText.textContent = 'Status: Processing LLMs';
+            feedbackMessage.classList.add('hidden');
+            outputSection.classList.add('hidden');
+            feedbackSection.classList.add('hidden');
+
+            try {
+                // 1. CALL FLASK API /generate
+                const response = await fetch(`${API_BASE_URL}/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: vaguePrompt }),
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (!data.error) {
+                    // 2. SUCCESS: Store result and display
+                    currentOptimization = {
+                        optimizedPrompt: data.optimized_prompt,
+                        aiResponse: data.final_response
+                    };
+
+                    optimizedPromptOutput.value = data.optimized_prompt.replace(/<OPTIMIZED_PROMPT>|<\/OPTIMIZED_PROMPT>|\\n/g, '').trim();
+                    aiResponseOutput.value = data.final_response.replace(/<FINAL_RESPONSE>|<\/FINAL_RESPONSE>|\\n/g, '').trim();
+
+                    outputSection.classList.remove('hidden');
+                    feedbackSection.classList.remove('hidden');
+                    statusText.textContent = 'Status: Ready for Feedback';
+                } else {
+                    // 3. HANDLE FAILURE
+                    statusText.textContent = `Error: ${data.error || 'Check Flask/Hugging Face Logs'}`;
+                    aiResponseOutput.value = `[ERROR]: Failed to get response. Details: ${data.error || 'Unknown API Error'}`;
+                    outputSection.classList.remove('hidden');
+                }
+            } catch (error) {
+                // 4. HANDLE NETWORK/CONNECTION FAILURE
+                statusText.textContent = `Network Error: Is the Flask API running on port 5000?`;
+                console.error('Fetch error:', error);
+                aiResponseOutput.value = `[NETWORK ERROR]: Could not connect to Flask API. Ensure 'python app.py' is running on port 5000.`;
+                outputSection.classList.remove('hidden');
+            } finally {
+                optimizeButton.disabled = false;
+                optimizeButton.textContent = 'Optimize & Generate 🚀';
+            }
+        });
+
+
+        // --- Feedback Logging API Call to Flask Backend (/feedback) ---
+        function logFeedback(rating_str) {
+            if (!currentOptimization) {
+                alert('No optimization to rate.');
+                return;
+            }
+
+            const rating_value = rating_str === 'positive' ? '👍 Excellent' : '👎 Needs Work';
+            
+            // --- NEW: Change feedback button color on click ---
+            if (rating_str === 'positive') {
+                thumbsUpBtn.classList.remove('bg-neutral', 'hover:bg-neutral-hover');
+                thumbsUpBtn.classList.add('bg-success', 'hover:bg-success-hover');
+                thumbsDownBtn.classList.add('bg-neutral', 'hover:bg-neutral-hover');
+                thumbsDownBtn.classList.remove('bg-danger', 'hover:bg-danger-hover');
+            } else {
+                thumbsDownBtn.classList.remove('bg-neutral', 'hover:bg-neutral-hover');
+                thumbsDownBtn.classList.add('bg-danger', 'hover:bg-danger-hover');
+                thumbsUpBtn.classList.add('bg-neutral', 'hover:bg-neutral-hover');
+                thumbsUpBtn.classList.remove('bg-success', 'hover:bg-success-hover');
+            }
+
+            statusText.textContent = 'Status: Logging Feedback...';
+
+            // 1. CALL FLASK API /feedback
+            fetch(`${API_BASE_URL}/feedback`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rating: rating_value }),
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Show success message
+                if (data.status) {
+                    feedbackMessage.textContent = `✓ ${data.status}`;
+                    feedbackMessage.classList.remove('hidden');
+                    statusText.textContent = 'Status: Feedback Logged';
+                    currentOptimization = null; // Clear state
+                } else {
+                    feedbackMessage.textContent = `Error: ${data.error || 'Log failed.'}`;
+                    feedbackMessage.classList.remove('hidden');
+                }
+            })
+            .catch(error => {
+                statusText.textContent = 'Network Error: Failed to send feedback.';
+                console.error('Feedback fetch error:', error);
+            })
+            .finally(() => {
+                // Visual confirmation fade-out
+                setTimeout(() => {
+                    feedbackMessage.classList.add('hidden');
+                    // Reset button colors after feedback
+                    thumbsUpBtn.classList.add('bg-neutral', 'hover:bg-neutral-hover');
+                    thumbsDownBtn.classList.add('bg-neutral', 'hover:bg-neutral-hover');
+                    thumbsUpBtn.classList.remove('bg-success', 'hover:bg-success-hover', 'bg-danger', 'hover:bg-danger-hover');
+                    thumbsDownBtn.classList.remove('bg-success', 'hover:bg-success-hover', 'bg-danger', 'hover:bg-danger-hover');
+                }, 3000);
+            });
+        }
+
+        // --- Attach Final Event Listeners ---
+        themeToggleButton.addEventListener('click', toggleTheme);
+        thumbsUpBtn.addEventListener('click', () => logFeedback('positive'));
+        thumbsDownBtn.addEventListener('click', () => logFeedback('negative'));
+
+        // Copy Listeners 
+        copyOptimizedBtn.addEventListener('click', () => 
+            copyToClipboard(optimizedPromptOutput.value, copyOptimizedBtn));
+        copyResponseBtn.addEventListener('click', () => 
+            copyToClipboard(aiResponseOutput.value, copyResponseBtn));
+        
+        console.log('AI Prompt Optimizer initialized and connected to Flask backend.');
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+Flask
+gradio_client
+requests
