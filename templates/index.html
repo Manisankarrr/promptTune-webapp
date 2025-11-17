@@ -83,6 +83,7 @@
   
   <div class="container mx-auto px-4 py-8 max-w-7xl">
     
+    <!-- Header -->
     <div class="flex justify-between items-start mb-8">
       <div class="text-left">
         <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
@@ -95,8 +96,10 @@
       </button>
     </div>
 
+    <!-- Main Card -->
     <div class="bg-card border border-border rounded-lg shadow-2xl p-6 md:p-8">
       
+      <!-- Input Section -->
       <div class="mb-8">
         <label for="vague-prompt" class="block text-sm font-medium mb-2 text-muted">
           1. Your Vague Question/Input
@@ -116,11 +119,13 @@
         </button>
       </div>
 
+      <!-- Output Section (Two Columns) -->
       <div id="output-section" class="hidden mb-8">
         <h2 class="text-xl font-semibold mb-4 text-muted">2. Optimization Results</h2>
         
         <div class="grid md:grid-cols-2 gap-6">
           
+          <!-- Column 1: Optimized Prompt -->
           <div class="bg-background border border-border rounded-lg p-4">
             <div class="flex items-center justify-between mb-3">
               <h3 class="text-sm font-medium text-muted">Optimized Prompt (The Instruction)</h3>
@@ -129,6 +134,7 @@
                 class="copy-button text-xs bg-border hover:bg-primary p-2 rounded transition-all"
                 title="Copy Optimized Prompt"
               >
+                <!-- Heroicon: document-duplicate (2 squares) -->
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876V5.625a1.125 1.125 0 00-1.125-1.125h-6c-1.125 0-2.25 1.125-2.25 1.125v3.75c0 .621.504 1.125 1.125 1.125h9.75z" />
                 </svg>
@@ -142,6 +148,7 @@
             ></textarea>
           </div>
 
+          <!-- Column 2: Final AI Response -->
           <div class="bg-background border border-border rounded-lg p-4">
             <div class="flex items-center justify-between mb-3">
               <h3 class="text-sm font-medium text-muted">3. Final AI Response (The Content)</h3>
@@ -150,6 +157,7 @@
                 class="copy-button text-xs bg-border hover:bg-primary p-2 rounded transition-all"
                 title="Copy Final Response"
               >
+                <!-- Heroicon: document-duplicate (2 squares) -->
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876V5.625a1.125 1.125 0 00-1.125-1.125h-6c-1.125 0-2.25 1.125-2.25 1.125v3.75c0 .621.504 1.125 1.125 1.125h9.75z" />
                 </svg>
@@ -166,9 +174,11 @@
         </div>
       </div>
 
+      <!-- Feedback/MLOps Section -->
       <div id="feedback-section" class="hidden border-t border-border pt-6">
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
           
+          <!-- Rating Buttons -->
           <div class="flex items-center gap-4">
             <span class="text-sm font-medium text-muted">4. Continuous Improvement Feedback:</span>
             <button
@@ -185,6 +195,7 @@
             </button>
           </div>
 
+          <!-- Status -->
           <div class="text-sm text-muted">
             <span id="status-text">Status: Ready</span>
             <span class="mx-2">|</span>
@@ -193,12 +204,15 @@
           
         </div>
 
+        <!-- Feedback Confirmation -->
         <div id="feedback-message" class="hidden mt-4 text-center text-sm text-success">
-          </div>
+          <!-- Confirmation message appears here -->
+        </div>
       </div>
 
     </div>
 
+    <!-- Footer -->
     <div class="text-center mt-8 text-xs text-muted">
       <p>Powered by Flask, Gradio API, and GitHub Actions MLOps Pipeline.</p>
     </div>
@@ -224,7 +238,7 @@
         }
     }
 
-    // --- UPDATED: Icon Definitions ---
+    // --- Icon Definitions ---
     const copyIconHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876V5.625a1.125 1.125 0 00-1.125-1.125h-6c-1.125 0-2.25 1.125-2.25 1.125v3.75c0 .621.504 1.125 1.125 1.125h9.75z" />
@@ -236,7 +250,7 @@
         </svg>
     `;
     
-    // --- UPDATED: Copy function to handle icons ---
+    // --- Copy function ---
     async function copyToClipboard(text, button) {
         try {
             await navigator.clipboard.writeText(text);
@@ -262,7 +276,7 @@
     }
 
 
-    // --- WRAPPER FIX: Wait for all HTML elements to load before running JavaScript ---
+    // --- Wait for DOM to load ---
     document.addEventListener('DOMContentLoaded', () => {
         
         // DOM Elements
@@ -281,10 +295,11 @@
         const copyResponseBtn = document.getElementById('copy-response'); 
 
         // --- Configuration ---
-        const API_BASE_URL = 'http://127.0.0.1:5000';
+        // VERCEL FIX: Use relative paths so API calls go to the same domain
+        const API_BASE_URL = '';
         let currentOptimization = null;
         
-        // --- Initial Theme Check (Ensure icon matches the initial 'light' class) ---
+        // --- Initial Theme Check ---
         if (document.documentElement.classList.contains('light')) {
             themeToggleButton.innerHTML = '☀️';
         } else {
@@ -345,9 +360,9 @@
                 }
             } catch (error) {
                 // 4. HANDLE NETWORK/CONNECTION FAILURE
-                statusText.textContent = `Network Error: Is the Flask API running on port 5000?`;
+                statusText.textContent = `Network Error: Could not connect to API.`;
                 console.error('Fetch error:', error);
-                aiResponseOutput.value = `[NETWORK ERROR]: Could not connect to Flask API. Ensure 'python app.py' is running on port 5000.`;
+                aiResponseOutput.value = `[NETWORK ERROR]: Could not connect to the API. Ensure the backend is running.`;
                 outputSection.classList.remove('hidden');
             } finally {
                 optimizeButton.disabled = false;
@@ -365,7 +380,6 @@
 
             const rating_value = rating_str === 'positive' ? '👍 Excellent' : '👎 Needs Work';
             
-            // --- NEW: Change feedback button color on click ---
             if (rating_str === 'positive') {
                 thumbsUpBtn.classList.remove('bg-neutral', 'hover:bg-neutral-hover');
                 thumbsUpBtn.classList.add('bg-success', 'hover:bg-success-hover');
@@ -423,7 +437,6 @@
         thumbsUpBtn.addEventListener('click', () => logFeedback('positive'));
         thumbsDownBtn.addEventListener('click', () => logFeedback('negative'));
 
-        // Copy Listeners 
         copyOptimizedBtn.addEventListener('click', () => 
             copyToClipboard(optimizedPromptOutput.value, copyOptimizedBtn));
         copyResponseBtn.addEventListener('click', () => 
